@@ -1,7 +1,7 @@
+import { GameCore } from "@/src/engine/core";
 import { GravityObjectComponent } from "../../components/gravity_object";
 import { MovementComponent } from "../../components/movement";
 import { PositionComponent } from "../../components/position";
-import { World } from "../../engine/world";
 import { MovementSystem } from "../movement";
 import { GravitySystem } from "./gravity";
 
@@ -13,26 +13,26 @@ describe("Test GravitySystem", () => {
     jest.runAllTimers();
 
     /* ______________ WORLD SETUP ______________ */
-    const world = new World();
-    world.systems.register(new GravitySystem());
-    world.systems.register(new MovementSystem());
-    world.components.registerStorage(
+    const core = new GameCore();
+    core.world.systems.register(new GravitySystem());
+    core.world.systems.register(new MovementSystem());
+    core.world.components.registerStorage(
       PositionComponent,
       () => new PositionComponent()
     );
-    world.components.registerStorage(
+    core.world.components.registerStorage(
       MovementComponent,
       () => new MovementComponent()
     );
-    world.components.registerStorage(
+    core.world.components.registerStorage(
       GravityObjectComponent,
       () => new GravityObjectComponent()
     );
 
     const posStore =
-      world.components.getStorage<PositionComponent>(PositionComponent);
+      core.world.components.getStorage<PositionComponent>(PositionComponent);
     const movStore =
-      world.components.getStorage<MovementComponent>(MovementComponent);
+      core.world.components.getStorage<MovementComponent>(MovementComponent);
 
     /* ______________ SETUP ENTITIES ______________ */
 
@@ -51,9 +51,9 @@ describe("Test GravitySystem", () => {
     expect(entityMov.velocity.getX()).toBe(0);
     expect(entityMov.velocity.getY()).toBe(0);
 
-    world.start();
+    core.world.start();
     setTimeout(() => {
-      world.pause();
+      core.world.pause();
 
       const gravity = GravitySystem.gravity.getY();
       const deltaTimeInSeconds = 16 / 1000;

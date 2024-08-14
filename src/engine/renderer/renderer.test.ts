@@ -1,5 +1,4 @@
-import { IWorld, World } from "../world";
-import { Renderer } from "./renderer";
+import { GameCore } from "../core";
 import { BasicScene } from "./types";
 
 jest.mock("pixi.js", () => {
@@ -26,15 +25,13 @@ class TestScene extends BasicScene {
 }
 
 describe("Renderer", () => {
-  let renderer: Renderer;
   let testScene: TestScene;
-  let world: IWorld;
+  let core: GameCore;
 
   beforeEach(() => {
-    world = new World();
-    renderer = new Renderer(world);
+    core = new GameCore();
     testScene = new TestScene();
-    renderer.scenes.addScene(testScene);
+    core.renderer.scenes.addScene(testScene);
   });
 
   afterEach(() => {
@@ -42,24 +39,24 @@ describe("Renderer", () => {
   });
 
   it("should initialize with a SceneManager", () => {
-    expect(renderer.scenes).toBeDefined();
+    expect(core.renderer.scenes).toBeDefined();
   });
 
   it("should append child to target element", async () => {
     const target = document.createElement("div");
-    await renderer.appendTo(target);
-    expect(renderer["app"].init).toHaveBeenCalledWith({ resizeTo: target });
-    expect(target.contains(renderer["app"].canvas)).toBe(true);
+    await core.renderer.appendTo(target);
+    expect(core.renderer["app"].init).toHaveBeenCalledWith({ resizeTo: target });
+    expect(target.contains(core.renderer["app"].canvas)).toBe(true);
   });
 
   it("should render the active scene", () => {
-    renderer.scenes.changeScene("test");
-    renderer.render();
-    expect(renderer["app"].stage).toBe(testScene.container);
+    core.renderer.scenes.changeScene("test");
+    core.renderer.render();
+    expect(core.renderer["app"].stage).toBe(testScene.container);
   });
 
   it("should not render if there is no active scene", () => {
-    renderer.render();
-    expect(renderer["app"].render).not.toHaveBeenCalled();
+    core.renderer.render();
+    expect(core.renderer["app"].render).not.toHaveBeenCalled();
   });
 });

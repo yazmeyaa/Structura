@@ -4,7 +4,7 @@ import { SceneManager } from "./scene_manager";
 import { IWorld } from "../world";
 
 export class Renderer implements IRenderer {
-  private app: Application;
+  public app: Application;
   public scenes: ISceneManager;
 
   constructor(world: IWorld) {

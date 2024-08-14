@@ -1,6 +1,6 @@
+import { GameCore } from "@/src/engine/core";
 import { MovementComponent } from "../../components/movement";
 import { PositionComponent } from "../../components/position";
-import { World } from "../../engine/world";
 import { MovementSystem } from "./movement";
 
 jest.useFakeTimers();
@@ -11,21 +11,21 @@ describe("Test MovementSystem", () => {
     jest.runAllTimers();
 
     /* ______________ WORLD SETUP ______________ */
-    const world = new World();
-    world.systems.register(new MovementSystem());
-    world.components.registerStorage(
+    const core = new GameCore();
+    core.world.systems.register(new MovementSystem());
+    core.world.components.registerStorage(
       PositionComponent,
       () => new PositionComponent()
     );
-    world.components.registerStorage(
+    core.world.components.registerStorage(
       MovementComponent,
       () => new MovementComponent()
     );
 
     const posStore =
-      world.components.getStorage<PositionComponent>(PositionComponent);
+      core.world.components.getStorage<PositionComponent>(PositionComponent);
     const movStore =
-      world.components.getStorage<MovementComponent>(MovementComponent);
+      core.world.components.getStorage<MovementComponent>(MovementComponent);
 
     /* ______________ SETUP ENTITIES ______________ */
 
@@ -45,8 +45,8 @@ describe("Test MovementSystem", () => {
     expect(entityMov.velocity.getY()).toBe(2);
 
     requestAnimationFrame(() => {
-      world.timer.update();
-      const deltaTimeInSeconds = world.timer.deltaMS / 1000;
+      core.timer.update();
+      const deltaTimeInSeconds = core.timer.deltaMS / 1000;
       const expectedPositionX =
         entityPos.x + entityMov.velocity.getX() * deltaTimeInSeconds;
       const expectedPositionY =

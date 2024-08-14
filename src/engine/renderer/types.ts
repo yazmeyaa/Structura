@@ -1,8 +1,9 @@
-import { Container, ContainerChild } from "pixi.js";
+import { Application, Container, ContainerChild } from "pixi.js";
 import { IWorld } from "../world";
 import { BaseEntity } from "../entities";
 
 export interface IRenderer {
+  app: Application
   scenes: ISceneManager;
   render(): void;
   appendTo(target: HTMLElement): Promise<void>;

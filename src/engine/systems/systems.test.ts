@@ -1,6 +1,6 @@
 import { MovementComponent } from "../../components/movement";
 import { PositionComponent } from "../../components/position";
-import { World } from "../world";
+import { GameCore } from "../core";
 import { IWorld } from "../world/types";
 import { System } from "./types";
 
@@ -43,21 +43,21 @@ describe("Test systems", () => {
   test("General testing", () => {
     jest.runAllTimers();
     /* ______________ WORLD SETUP ______________ */
-    const world = new World();
-    world.systems.register(new MovementSystem());
-    world.components.registerStorage(
+    const core = new GameCore();
+    core.world.systems.register(new MovementSystem());
+    core.world.components.registerStorage(
       PositionComponent,
       () => new PositionComponent()
     );
-    world.components.registerStorage(
+    core.world.components.registerStorage(
       MovementComponent,
       () => new MovementComponent()
     );
 
     const posStore =
-      world.components.getStorage<PositionComponent>(PositionComponent);
+      core.world.components.getStorage<PositionComponent>(PositionComponent);
     const movStore =
-      world.components.getStorage<MovementComponent>(MovementComponent);
+      core.world.components.getStorage<MovementComponent>(MovementComponent);
 
     /* ______________ SETUP ENTITIES ______________ */
 
@@ -73,7 +73,7 @@ describe("Test systems", () => {
 
     expect(entityPos.x).toBe(1);
     expect(entityPos.y).toBe(1);
-    world.update();
+    core.world.update();
     expect(entityPos.x).toBe(3);
     expect(entityPos.y).toBe(3);
   });

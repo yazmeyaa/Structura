@@ -1,6 +1,6 @@
+import { GameCore } from "@/src/engine/core";
 import { BoundingBoxComponent } from "../../components/bounding_box";
 import { Collidable } from "../../components/collider";
-import { World } from "../../engine/world";
 import { CollisionDetectSystem } from "./collision_detect";
 import { COLLISION_DETECT_EVENT_NAME } from "./consts";
 import { CollisionPayload } from "./types";
@@ -13,15 +13,15 @@ describe("Test CollisionSystem", () => {
     jest.runAllTimers();
 
     /* ______________ WORLD SETUP ______________ */
-    const world = new World();
-    world.systems.register(new CollisionDetectSystem());
-    world.components.registerStorage(
+    const core = new GameCore();
+    core.world.systems.register(new CollisionDetectSystem());
+    core.world.components.registerStorage(
       BoundingBoxComponent,
       () => new BoundingBoxComponent(0, 0, 0, 0)
     );
-    world.components.registerStorage(Collidable, () => new Collidable());
+    core.world.components.registerStorage(Collidable, () => new Collidable());
 
-    const bboxStore = world.components.getStorage<BoundingBoxComponent>(BoundingBoxComponent);
+    const bboxStore = core.world.components.getStorage<BoundingBoxComponent>(BoundingBoxComponent);
 
     /* ______________ SETUP ENTITIES ______________ */
 
@@ -45,7 +45,7 @@ describe("Test CollisionSystem", () => {
 
     let wasCollided = false;
 
-    world.events.subscribe<CollisionPayload>(
+    core.world.events.subscribe<CollisionPayload>(
       COLLISION_DETECT_EVENT_NAME,
       () => {
         wasCollided = true;
@@ -53,7 +53,7 @@ describe("Test CollisionSystem", () => {
     );
 
     // Выполняем проверку коллизий
-    world.update();
+    core.world.update();
     expect(wasCollided).toBe(true);
     // Проверяем, что метод handleCollision был вызван с правильными параметрами
   });
@@ -62,14 +62,14 @@ describe("Test CollisionSystem", () => {
     jest.runAllTimers();
 
     /* ______________ WORLD SETUP ______________ */
-    const world = new World();
-    world.systems.register(new CollisionDetectSystem());
-    world.components.registerStorage(
+    const core = new GameCore();
+    core.world.systems.register(new CollisionDetectSystem());
+    core.world.components.registerStorage(
       BoundingBoxComponent,
       () => new BoundingBoxComponent(0, 0, 0, 0)
     );
 
-    const bboxStore = world.components.getStorage<BoundingBoxComponent>(BoundingBoxComponent);
+    const bboxStore = core.world.components.getStorage<BoundingBoxComponent>(BoundingBoxComponent);
 
     /* ______________ SETUP ENTITIES ______________ */
 
@@ -93,14 +93,14 @@ describe("Test CollisionSystem", () => {
 
     let wasCollided = false;
 
-    world.events.subscribe<CollisionPayload>(
+    core.world.events.subscribe<CollisionPayload>(
       COLLISION_DETECT_EVENT_NAME,
       () => {
         wasCollided = true;
       }
     );
 
-    world.update();
+    core.world.update();
     expect(wasCollided).toBe(false);
   });
 });
